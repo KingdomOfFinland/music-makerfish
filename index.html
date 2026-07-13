@@ -429,6 +429,8 @@
     <div class="langtoggle">
       <button id="lang-en" class="active">EN</button>
       <button id="lang-fi">FI</button>
+      <button id="lang-de">DE</button>
+      <button id="lang-es">ES</button>
     </div>
   </header>
 
@@ -499,6 +501,11 @@
         <div class="info-box" id="savedInfo" data-i18n="savedHint">
           No limit on slots. Saved locally in this browser only.
         </div>
+        <div class="btnrow" style="margin-top:10px;">
+          <button class="action" id="exportJsonBtn" data-i18n="btnExportJson">⬇ EXPORT JSON</button>
+          <button class="action" id="importJsonBtn" data-i18n="btnImportJson">⬆ IMPORT JSON</button>
+          <input type="file" id="importJsonFile" accept="application/json,.json" style="display:none;">
+        </div>
       </div>
 
       <div class="panel">
@@ -534,6 +541,11 @@ const I18N = {
     savedHint: "No limit on slots. Saved locally in this browser only.",
     savedEmpty: "No saved tracks yet. Hit SAVE TRACK to add one.",
     savePrompt: "Name this track:",
+    btnExportJson: "⬇ EXPORT JSON",
+    btnImportJson: "⬆ IMPORT JSON",
+    importOk: " track(s) imported.",
+    importBadFile: "That doesn't look like a valid BEATBOX export file.",
+    importMerge: "Import will ADD to your existing saved tracks (won't overwrite). Continue?",
     aboutTitle: "WHAT IS THIS?",
     byteInfo: `<b>Bytebeat</b> is a style of algorithmic music where a tiny formula, using only the integer variable <code>t</code> (an ever-increasing sample counter) and bitwise operators (<code>&amp;</code> <code>|</code> <code>^</code> <code>&gt;&gt;</code> <code>&lt;&lt;</code>), generates 8-bit audio output. Each output sample is <code>formula(t) &amp; 255</code>, played back at a fixed sample rate. The genre started around 2011 on viznut's blog and demoscene forums — the whole idea is that a single line of C-like code can produce surprisingly musical, glitchy, rhythmic noise.`,
     floatInfo: `<b>Floatbeat</b> is bytebeat's cousin: instead of integer bit-tricks, the formula outputs a floating point value (typically in range -1 to 1, or 0 to 1) using functions like <code>sin()</code>, <code>Math.sin(t)</code>, and normal arithmetic. It tends to sound smoother/more melodic than bytebeat's harsh bit-crushed textures, since you get real waveforms instead of quantized bit patterns.`,
@@ -558,10 +570,73 @@ const I18N = {
     savedHint: "Ei rajaa paikkojen määrälle. Tallennetaan paikallisesti tähän selaimeen.",
     savedEmpty: "Ei vielä tallennettuja kappaleita. Paina TALLENNA KAPPALE lisätäksesi.",
     savePrompt: "Nimeä tämä kappale:",
+    btnExportJson: "⬇ VIE JSON",
+    btnImportJson: "⬆ TUO JSON",
+    importOk: " kappale(tta) tuotu.",
+    importBadFile: "Tämä ei näytä kelvolliselta BEATBOX-vientitiedostolta.",
+    importMerge: "Tuonti LISÄÄ nykyisiin tallennettuihin kappaleisiin (ei ylikirjoita). Jatketaanko?",
     aboutTitle: "MIKÄ TÄMÄ ON?",
     byteInfo: `<b>Bytebeat</b> on algoritmisen musiikin tyylilaji, jossa pieni kaava — käyttäen vain kokonaislukumuuttujaa <code>t</code> (jatkuvasti kasvava näytelaskuri) ja bittioperaattoreita (<code>&amp;</code> <code>|</code> <code>^</code> <code>&gt;&gt;</code> <code>&lt;&lt;</code>) — tuottaa 8-bittistä äänidataa. Jokainen ulostuleva näyte on <code>kaava(t) &amp; 255</code>, toistettuna kiinteällä näytteenottotaajuudella. Tyylilaji sai alkunsa noin 2011 viznutin blogista ja demoscene-foorumeilta — ideana on, että yksi C:n kaltainen koodirivi voi tuottaa yllättävän musikaalista, häiriöistä ja rytmikästä melua.`,
     floatInfo: `<b>Floatbeat</b> on bytebeatin serkku: kokonaislukujen bittitemppujen sijaan kaava tuottaa liukulukuarvon (tyypillisesti välillä -1–1 tai 0–1) käyttäen funktioita kuten <code>sin()</code>, <code>Math.sin(t)</code>, ja tavallista aritmetiikkaa. Se kuulostaa yleensä pehmeämmältä ja melodisemmalta kuin bytebeatin karkea bittipurettu tekstuuri, koska saat oikeita aaltomuotoja kvantisoitujen bittikuvioiden sijaan.`,
     about: `BEATBOX on livekaavasyntetisaattori. Bytebeat-tilassa <code>t</code> on kokonaislukunäytelaskuri ja kaavasi lasketaan JS:n bittimatematiikkana, kiertäen välillä 0-255 (8-bit). Floatbeat-tilassa kaava lasketaan liukulukuna ja rajataan välille -1..1. Siirrä näytteenottotaajuuden liukusäädintä muuttaaksesi toistonopeutta/sävelkorkeutta. Kaikki toimii paikallisesti selaimessasi Web Audio API:n kautta — ei palvelinta, ei latausta, ei seurantaa.`
+  },
+  de: {
+    subtitle: "BYTEBEAT / FLOATBEAT SYNTHESE-TERMINAL — FISH ENGINE PROJEKT",
+    scopeTitle: "OSZILLOSKOP",
+    scopeIdle: "LEERLAUF // KEIN SIGNAL",
+    scopeRunning: "LIVE-SIGNAL",
+    editorTitle: "FORMEL-EDITOR",
+    modeByte: "BYTEBEAT (Ganzzahl, t)",
+    modeFloat: "FLOATBEAT (Gleitkomma, t)",
+    btnPlay: "▶ ABSPIELEN",
+    btnStop: "■ STOPP",
+    btnExport: "⬇ WAV EXPORTIEREN",
+    btnSave: "💾 TRACK SPEICHERN",
+    sampleRate: "ABTASTRATE (Hz)",
+    presetTitle: "PRESET-BIBLIOTHEK",
+    presetHint: "Klicke auf ein Preset, um es in den Editor zu laden. BB = Bytebeat, FB = Floatbeat.",
+    savedTitle: "GESPEICHERTE TRACKS",
+    savedHint: "Keine Begrenzung der Slots. Wird nur lokal in diesem Browser gespeichert.",
+    savedEmpty: "Noch keine gespeicherten Tracks. Klicke TRACK SPEICHERN, um einen hinzuzufügen.",
+    savePrompt: "Diesen Track benennen:",
+    btnExportJson: "⬇ JSON EXPORTIEREN",
+    btnImportJson: "⬆ JSON IMPORTIEREN",
+    importOk: " Track(s) importiert.",
+    importBadFile: "Das sieht nicht nach einer gültigen BEATBOX-Exportdatei aus.",
+    importMerge: "Der Import fügt neue Tracks zu deinen gespeicherten hinzu (überschreibt nicht). Fortfahren?",
+    aboutTitle: "WAS IST DAS?",
+    byteInfo: `<b>Bytebeat</b> ist ein Stil algorithmischer Musik, bei dem eine winzige Formel — die nur die Ganzzahlvariable <code>t</code> (ein stetig steigender Sample-Zähler) und bitweise Operatoren (<code>&amp;</code> <code>|</code> <code>^</code> <code>&gt;&gt;</code> <code>&lt;&lt;</code>) verwendet — 8-Bit-Audio erzeugt. Jedes Ausgabesample ist <code>formel(t) &amp; 255</code>, abgespielt mit fester Abtastrate. Das Genre entstand um 2011 im Blog von viznut und in Demoscene-Foren — die Idee ist, dass eine einzige C-ähnliche Codezeile überraschend musikalisches, verzerrtes, rhythmisches Rauschen erzeugen kann.`,
+    floatInfo: `<b>Floatbeat</b> ist der Cousin von Bytebeat: Statt Ganzzahl-Bit-Tricks gibt die Formel einen Gleitkommawert aus (meist im Bereich -1 bis 1 oder 0 bis 1), mit Funktionen wie <code>sin()</code>, <code>Math.sin(t)</code> und normaler Arithmetik. Es klingt meist weicher und melodischer als die harten, bit-zerhackten Texturen von Bytebeat, da echte Wellenformen statt quantisierter Bitmuster entstehen.`,
+    about: `BEATBOX ist ein Live-Formel-Synthesizer. Im Bytebeat-Modus wird <code>t</code> als Ganzzahl-Sample-Zähler behandelt und deine Formel als JS-Bitmathematik ausgewertet, umlaufend auf 0-255 (8-Bit). Im Floatbeat-Modus wird deine Formel als Gleitkommazahl ausgewertet und auf -1..1 begrenzt. Bewege den Abtastraten-Regler, um Wiedergabegeschwindigkeit/Tonhöhe zu ändern. Alles läuft lokal in deinem Browser über die Web Audio API — kein Server, kein Upload, kein Tracking.`
+  },
+  es: {
+    subtitle: "TERMINAL DE SÍNTESIS BYTEBEAT / FLOATBEAT — PROYECTO FISH ENGINE",
+    scopeTitle: "OSCILOSCOPIO",
+    scopeIdle: "INACTIVO // SIN SEÑAL",
+    scopeRunning: "SEÑAL EN VIVO",
+    editorTitle: "EDITOR DE FÓRMULAS",
+    modeByte: "BYTEBEAT (entero, t)",
+    modeFloat: "FLOATBEAT (flotante, t)",
+    btnPlay: "▶ REPRODUCIR",
+    btnStop: "■ DETENER",
+    btnExport: "⬇ EXPORTAR WAV",
+    btnSave: "💾 GUARDAR PISTA",
+    sampleRate: "TASA DE MUESTREO (Hz)",
+    presetTitle: "BIBLIOTECA DE PRESETS",
+    presetHint: "Haz clic en un preset para cargarlo en el editor. BB = bytebeat, FB = floatbeat.",
+    savedTitle: "PISTAS GUARDADAS",
+    savedHint: "Sin límite de espacios. Se guarda solo localmente en este navegador.",
+    savedEmpty: "Aún no hay pistas guardadas. Pulsa GUARDAR PISTA para añadir una.",
+    savePrompt: "Nombra esta pista:",
+    btnExportJson: "⬇ EXPORTAR JSON",
+    btnImportJson: "⬆ IMPORTAR JSON",
+    importOk: " pista(s) importada(s).",
+    importBadFile: "Eso no parece un archivo de exportación de BEATBOX válido.",
+    importMerge: "La importación AÑADIRÁ a tus pistas guardadas existentes (no las sobrescribirá). ¿Continuar?",
+    aboutTitle: "¿QUÉ ES ESTO?",
+    byteInfo: `<b>Bytebeat</b> es un estilo de música algorítmica donde una fórmula diminuta, usando solo la variable entera <code>t</code> (un contador de muestras que aumenta constantemente) y operadores bit a bit (<code>&amp;</code> <code>|</code> <code>^</code> <code>&gt;&gt;</code> <code>&lt;&lt;</code>), genera audio de 8 bits. Cada muestra de salida es <code>formula(t) &amp; 255</code>, reproducida a una tasa de muestreo fija. El género comenzó alrededor de 2011 en el blog de viznut y en foros de demoscene — la idea es que una sola línea de código tipo C puede producir ruido sorprendentemente musical, glitcheado y rítmico.`,
+    floatInfo: `<b>Floatbeat</b> es el primo de bytebeat: en lugar de trucos de bits con enteros, la fórmula genera un valor de punto flotante (típicamente entre -1 y 1, o 0 y 1) usando funciones como <code>sin()</code>, <code>Math.sin(t)</code>, y aritmética normal. Suele sonar más suave y melódico que las texturas ásperas de bytebeat, ya que se obtienen formas de onda reales en lugar de patrones de bits cuantizados.`,
+    about: `BEATBOX es un sintetizador de fórmulas en vivo. El modo bytebeat trata <code>t</code> como un contador entero de muestras y evalúa tu fórmula como matemática de bits en JS, ajustándose a 0-255 (8 bits). El modo floatbeat evalúa tu fórmula como flotante y la limita a -1..1. Mueve el control de tasa de muestreo para cambiar la velocidad/tono de reproducción. Todo se ejecuta localmente en tu navegador mediante la Web Audio API — sin servidor, sin subidas, sin rastreo.`
   }
 };
 let currentLang = 'en';
@@ -578,18 +653,17 @@ function applyI18n(){
   if(typeof renderSavedTracks === 'function') renderSavedTracks();
 }
 
-document.getElementById('lang-en').onclick = ()=>{
-  currentLang='en';
-  document.getElementById('lang-en').classList.add('active');
-  document.getElementById('lang-fi').classList.remove('active');
+const LANGS = ['en','fi','de','es'];
+function setLang(lang){
+  currentLang = lang;
+  LANGS.forEach(l=>{
+    document.getElementById('lang-'+l).classList.toggle('active', l===lang);
+  });
   applyI18n();
-};
-document.getElementById('lang-fi').onclick = ()=>{
-  currentLang='fi';
-  document.getElementById('lang-fi').classList.add('active');
-  document.getElementById('lang-en').classList.remove('active');
-  applyI18n();
-};
+}
+LANGS.forEach(l=>{
+  document.getElementById('lang-'+l).onclick = ()=>setLang(l);
+});
 
 /* ============ presets ============ */
 const PRESETS = [
@@ -731,6 +805,92 @@ function saveCurrentTrack(){
 }
 
 document.getElementById('saveBtn').onclick = saveCurrentTrack;
+
+/* ---- export / import saved tracks as JSON ---- */
+document.getElementById('exportJsonBtn').onclick = exportSavedTracksJson;
+document.getElementById('importJsonBtn').onclick = ()=>document.getElementById('importJsonFile').click();
+document.getElementById('importJsonFile').onchange = handleImportJsonFile;
+
+function exportSavedTracksJson(){
+  const tracks = loadSavedTracks();
+  const payload = {
+    app: 'BEATBOX',
+    version: 1,
+    exportedAt: Date.now(),
+    tracks: tracks
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'beatbox_tracks_' + Date.now() + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+
+function handleImportJsonFile(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const t = I18N[currentLang];
+
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    let parsed;
+    try{
+      parsed = JSON.parse(ev.target.result);
+    }catch(err){
+      showError(t.importBadFile);
+      e.target.value = '';
+      return;
+    }
+
+    const incoming = Array.isArray(parsed) ? parsed : parsed.tracks;
+    if(!Array.isArray(incoming)){
+      showError(t.importBadFile);
+      e.target.value = '';
+      return;
+    }
+
+    // validate + sanitize each entry
+    const clean = incoming.filter(item=>{
+      return item && typeof item.formula === 'string' && (item.mode === 'byte' || item.mode === 'float');
+    }).map(item=>({
+      name: typeof item.name === 'string' && item.name.trim() ? item.name.trim() : 'imported_track',
+      mode: item.mode,
+      formula: item.formula,
+      hz: typeof item.hz === 'number' ? item.hz : 8000,
+      savedAt: typeof item.savedAt === 'number' ? item.savedAt : Date.now()
+    }));
+
+    if(clean.length === 0){
+      showError(t.importBadFile);
+      e.target.value = '';
+      return;
+    }
+
+    if(!window.confirm(t.importMerge)){
+      e.target.value = '';
+      return;
+    }
+
+    const existing = loadSavedTracks();
+    const merged = existing.concat(clean);
+    if(writeSavedTracks(merged)){
+      renderSavedTracks();
+      clearError();
+      document.getElementById('savedInfo').textContent = clean.length + t.importOk;
+    }
+    e.target.value = '';
+  };
+  reader.onerror = ()=>{
+    showError(t.importBadFile);
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
 
 /* ============ audio engine ============ */
 let audioCtx = null;
