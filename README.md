@@ -33,5 +33,6 @@ Math.sin(t*0.02)*0.5        // floatbeat sine drone
 ## Part of the Fish Engine family
  
 - [Fish Engine](https://github.com/KingdomOfFinland/Simple-Engine) — arcade hub (Pong, Pac-Man, Pinball, and more)
+- [Fish Pong](https://github.com/KingdomOfFinland/ponghtml) - Pong 
 - music-makerfish — this repo
 Built by Valkeakoski Engineering.
