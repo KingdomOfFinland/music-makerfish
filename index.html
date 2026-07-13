@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -335,6 +336,11 @@
     flex-shrink:0;
   }
   .preset-tag.float{background:var(--amber);}
+  .preset-secret .preset-name{
+    color:var(--red);
+    text-shadow:0 0 6px rgba(255,68,68,0.5);
+  }
+  .preset-secret .preset-tag{background:var(--red);}
 
   /* info box */
   .info-box{
@@ -365,9 +371,54 @@
     background:var(--green);
     color:var(--bg);
   }
+
+  /* ===== DIOXIDE glitch sequence ===== */
+  #glitchOverlay{
+    position:fixed;
+    inset:0;
+    z-index:200;
+    pointer-events:none;
+    opacity:0;
+    background-image:url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/472a6d44-b312-402f-8373-731cd90f46d1/djpjbok-18aca538-eac9-46dc-88c4-93dfac433f0c.png/v1/fill/w_1024,h_768,q_80,strp/windows_xp_computer_random_screenshot_by_7581galaxy_djpjbok-fullview.jpg');
+    background-size:cover;
+    background-position:center;
+    mix-blend-mode:screen;
+    filter:contrast(1.4) saturate(1.6);
+  }
+
+  body.dioxide-active{
+    animation: dioxideScroll 2.4s linear infinite, dioxideInvert 0.35s steps(1) infinite;
+  }
+  body.dioxide-active #glitchOverlay{
+    animation: dioxideFlicker 0.6s steps(2) infinite;
+  }
+
+  @keyframes dioxideScroll{
+    0%{ transform:translateY(0); }
+    100%{ transform:translateY(100vh); }
+  }
+  @keyframes dioxideInvert{
+    0%, 60%{ filter:none; }
+    61%, 100%{ filter:invert(1) hue-rotate(180deg); }
+  }
+  @keyframes dioxideFlicker{
+    0%{ opacity:0; }
+    40%{ opacity:0.55; }
+    60%{ opacity:0.15; }
+    100%{ opacity:0.4; }
+  }
+
+  body.dioxide-settle{
+    animation: dioxideSettle 0.6s ease-out forwards;
+  }
+  @keyframes dioxideSettle{
+    0%{ transform:translateY(0); filter:invert(1); }
+    100%{ transform:translateY(0); filter:none; }
+  }
 </style>
 </head>
 <body>
+<div id="glitchOverlay"></div>
 <div id="app">
 
   <header>
@@ -412,6 +463,7 @@
           <button class="action play" id="playBtn" data-i18n="btnPlay">▶ PLAY</button>
           <button class="action stop" id="stopBtn" data-i18n="btnStop" disabled>■ STOP</button>
           <button class="action" id="exportBtn" data-i18n="btnExport">⬇ EXPORT WAV</button>
+          <button class="action" id="saveBtn" data-i18n="btnSave">💾 SAVE TRACK</button>
         </div>
 
         <div class="err" id="errBox"></div>
@@ -435,6 +487,17 @@
         <div class="preset-list" id="presetList"></div>
         <div class="info-box" id="presetInfo" data-i18n="presetHint">
           Click a preset to load it into the editor. BB = bytebeat, FB = floatbeat.
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">
+          <span data-i18n="savedTitle">SAVED TRACKS</span>
+          <span id="savedCount"></span>
+        </div>
+        <div class="preset-list" id="savedList"></div>
+        <div class="info-box" id="savedInfo" data-i18n="savedHint">
+          No limit on slots. Saved locally in this browser only.
         </div>
       </div>
 
@@ -463,9 +526,14 @@ const I18N = {
     btnPlay: "▶ PLAY",
     btnStop: "■ STOP",
     btnExport: "⬇ EXPORT WAV",
+    btnSave: "💾 SAVE TRACK",
     sampleRate: "SAMPLE RATE (Hz)",
     presetTitle: "PRESET LIBRARY",
     presetHint: "Click a preset to load it into the editor. BB = bytebeat, FB = floatbeat.",
+    savedTitle: "SAVED TRACKS",
+    savedHint: "No limit on slots. Saved locally in this browser only.",
+    savedEmpty: "No saved tracks yet. Hit SAVE TRACK to add one.",
+    savePrompt: "Name this track:",
     aboutTitle: "WHAT IS THIS?",
     byteInfo: `<b>Bytebeat</b> is a style of algorithmic music where a tiny formula, using only the integer variable <code>t</code> (an ever-increasing sample counter) and bitwise operators (<code>&amp;</code> <code>|</code> <code>^</code> <code>&gt;&gt;</code> <code>&lt;&lt;</code>), generates 8-bit audio output. Each output sample is <code>formula(t) &amp; 255</code>, played back at a fixed sample rate. The genre started around 2011 on viznut's blog and demoscene forums — the whole idea is that a single line of C-like code can produce surprisingly musical, glitchy, rhythmic noise.`,
     floatInfo: `<b>Floatbeat</b> is bytebeat's cousin: instead of integer bit-tricks, the formula outputs a floating point value (typically in range -1 to 1, or 0 to 1) using functions like <code>sin()</code>, <code>Math.sin(t)</code>, and normal arithmetic. It tends to sound smoother/more melodic than bytebeat's harsh bit-crushed textures, since you get real waveforms instead of quantized bit patterns.`,
@@ -482,9 +550,14 @@ const I18N = {
     btnPlay: "▶ TOISTA",
     btnStop: "■ PYSÄYTÄ",
     btnExport: "⬇ VIE WAV",
+    btnSave: "💾 TALLENNA KAPPALE",
     sampleRate: "NÄYTTEENOTTOTAAJUUS (Hz)",
     presetTitle: "ESIASETUSKIRJASTO",
     presetHint: "Klikkaa esiasetusta ladataksesi sen editoriin. BB = bytebeat, FB = floatbeat.",
+    savedTitle: "TALLENNETUT KAPPALEET",
+    savedHint: "Ei rajaa paikkojen määrälle. Tallennetaan paikallisesti tähän selaimeen.",
+    savedEmpty: "Ei vielä tallennettuja kappaleita. Paina TALLENNA KAPPALE lisätäksesi.",
+    savePrompt: "Nimeä tämä kappale:",
     aboutTitle: "MIKÄ TÄMÄ ON?",
     byteInfo: `<b>Bytebeat</b> on algoritmisen musiikin tyylilaji, jossa pieni kaava — käyttäen vain kokonaislukumuuttujaa <code>t</code> (jatkuvasti kasvava näytelaskuri) ja bittioperaattoreita (<code>&amp;</code> <code>|</code> <code>^</code> <code>&gt;&gt;</code> <code>&lt;&lt;</code>) — tuottaa 8-bittistä äänidataa. Jokainen ulostuleva näyte on <code>kaava(t) &amp; 255</code>, toistettuna kiinteällä näytteenottotaajuudella. Tyylilaji sai alkunsa noin 2011 viznutin blogista ja demoscene-foorumeilta — ideana on, että yksi C:n kaltainen koodirivi voi tuottaa yllättävän musikaalista, häiriöistä ja rytmikästä melua.`,
     floatInfo: `<b>Floatbeat</b> on bytebeatin serkku: kokonaislukujen bittitemppujen sijaan kaava tuottaa liukulukuarvon (tyypillisesti välillä -1–1 tai 0–1) käyttäen funktioita kuten <code>sin()</code>, <code>Math.sin(t)</code>, ja tavallista aritmetiikkaa. Se kuulostaa yleensä pehmeämmältä ja melodisemmalta kuin bytebeatin karkea bittipurettu tekstuuri, koska saat oikeita aaltomuotoja kvantisoitujen bittikuvioiden sijaan.`,
@@ -502,6 +575,7 @@ function applyI18n(){
   document.getElementById('modeInfo').innerHTML = mode==='byte' ? t.byteInfo : t.floatInfo;
   document.getElementById('aboutBox').innerHTML = t.about;
   document.getElementById('scopeStatus').textContent = audioCtx && isPlaying ? t.scopeRunning : t.scopeIdle;
+  if(typeof renderSavedTracks === 'function') renderSavedTracks();
 }
 
 document.getElementById('lang-en').onclick = ()=>{
@@ -531,6 +605,7 @@ const PRESETS = [
   {name:"FM Bell", mode:"float", formula:"Math.sin(t*0.02+Math.sin(t*0.05)*3)*0.6"},
   {name:"Wobble Bass", mode:"float", formula:"Math.sin(t*0.01)*Math.sin(t*0.0003)*0.8"},
   {name:"Harmonic Stack", mode:"float", formula:"(Math.sin(t*0.02)+Math.sin(t*0.04)*0.5+Math.sin(t*0.08)*0.25)*0.4"},
+  {name:"DIOXIDE", mode:"byte", formula:"t&(t>>8)", secret:true},
 ];
 
 function renderPresets(){
@@ -540,6 +615,7 @@ function renderPresets(){
   PRESETS.forEach((p, idx)=>{
     const div = document.createElement('div');
     div.className = 'preset-item';
+    if(p.secret) div.classList.add('preset-secret');
     div.innerHTML = `<span class="preset-name">${p.name}</span><span class="preset-tag ${p.mode==='float'?'float':''}">${p.mode==='float'?'FB':'BB'}</span>`;
     div.onclick = ()=>{
       setMode(p.mode);
@@ -547,10 +623,114 @@ function renderPresets(){
       document.querySelectorAll('.preset-item').forEach(e=>e.classList.remove('selected'));
       div.classList.add('selected');
       clearError();
+      if(p.secret){
+        startAudio();
+        triggerDioxide();
+      }
     };
     list.appendChild(div);
   });
 }
+
+/* ============ saved tracks (localStorage, unlimited slots) ============ */
+const SAVED_KEY = 'beatbox_saved_tracks';
+
+function loadSavedTracks(){
+  try{
+    const raw = localStorage.getItem(SAVED_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){
+    return [];
+  }
+}
+
+function writeSavedTracks(tracks){
+  try{
+    localStorage.setItem(SAVED_KEY, JSON.stringify(tracks));
+    return true;
+  }catch(e){
+    showError((currentLang==='fi' ? 'Tallennus epäonnistui (selaimen tila täynnä?)' : 'Save failed (browser storage full?)'));
+    return false;
+  }
+}
+
+function renderSavedTracks(){
+  const tracks = loadSavedTracks();
+  const list = document.getElementById('savedList');
+  const t = I18N[currentLang];
+  document.getElementById('savedCount').textContent = tracks.length + (currentLang==='fi' ? ' KPL' : ' SLOTS');
+
+  if(tracks.length === 0){
+    list.innerHTML = '';
+    document.getElementById('savedInfo').textContent = t.savedEmpty;
+    return;
+  }
+  document.getElementById('savedInfo').textContent = t.savedHint;
+
+  list.innerHTML = '';
+  tracks.forEach((track, i)=>{
+    const div = document.createElement('div');
+    div.className = 'preset-item';
+    div.innerHTML = `<span class="preset-name">${escapeHtml(track.name)}</span>
+      <span style="display:flex;gap:6px;align-items:center;">
+        <span class="preset-tag ${track.mode==='float'?'float':''}">${track.mode==='float'?'FB':'BB'}</span>
+        <button class="del-track" data-idx="${i}" title="delete" style="background:transparent;border:1px solid var(--red);color:var(--red);font-family:inherit;font-size:10px;padding:3px 7px;cursor:pointer;">✕</button>
+      </span>`;
+    div.querySelector('.preset-name').onclick = div.querySelector('.preset-tag').onclick = ()=>{
+      setMode(track.mode);
+      document.getElementById('formula').value = track.formula;
+      if(track.hz){
+        sampleRate = track.hz;
+        hzSlider.value = track.hz;
+        hzVal.textContent = track.hz;
+      }
+      document.querySelectorAll('.preset-item').forEach(e=>e.classList.remove('selected'));
+      div.classList.add('selected');
+      clearError();
+    };
+    div.querySelector('.del-track').onclick = (e)=>{
+      e.stopPropagation();
+      const tracks2 = loadSavedTracks();
+      tracks2.splice(i,1);
+      writeSavedTracks(tracks2);
+      renderSavedTracks();
+    };
+    list.appendChild(div);
+  });
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function saveCurrentTrack(){
+  const formulaStr = document.getElementById('formula').value.trim();
+  if(!formulaStr){
+    showError(currentLang==='fi' ? 'Kaava puuttuu.' : 'No formula entered.');
+    return;
+  }
+  const t = I18N[currentLang];
+  const defaultName = 'track_' + (loadSavedTracks().length + 1);
+  const name = window.prompt(t.savePrompt, defaultName);
+  if(name === null) return; // cancelled
+  const finalName = name.trim() || defaultName;
+
+  const tracks = loadSavedTracks();
+  tracks.push({
+    name: finalName,
+    mode: mode,
+    formula: formulaStr,
+    hz: sampleRate,
+    savedAt: Date.now()
+  });
+  if(writeSavedTracks(tracks)){
+    renderSavedTracks();
+  }
+}
+
+document.getElementById('saveBtn').onclick = saveCurrentTrack;
 
 /* ============ audio engine ============ */
 let audioCtx = null;
@@ -582,6 +762,18 @@ function compile(formula){
 
 function updateHzReadout(t){
   document.getElementById('hzReadout').textContent = 't = ' + Math.floor(t);
+}
+
+let dioxideTimeout = null;
+function triggerDioxide(){
+  if(dioxideTimeout) clearTimeout(dioxideTimeout);
+  document.body.classList.remove('dioxide-settle');
+  document.body.classList.add('dioxide-active');
+  dioxideTimeout = setTimeout(()=>{
+    document.body.classList.remove('dioxide-active');
+    document.body.classList.add('dioxide-settle');
+    setTimeout(()=>document.body.classList.remove('dioxide-settle'), 650);
+  }, 4200);
 }
 
 const hzSlider = document.getElementById('hzSlider');
@@ -819,6 +1011,7 @@ function encodeWav(samples, sr){
 
 /* ============ init ============ */
 renderPresets();
+renderSavedTracks();
 setMode('byte');
 applyI18n();
 resizeCanvas();
