@@ -679,7 +679,7 @@ const PRESETS = [
   {name:"FM Bell", mode:"float", formula:"Math.sin(t*0.02+Math.sin(t*0.05)*3)*0.6"},
   {name:"Wobble Bass", mode:"float", formula:"Math.sin(t*0.01)*Math.sin(t*0.0003)*0.8"},
   {name:"Harmonic Stack", mode:"float", formula:"(Math.sin(t*0.02)+Math.sin(t*0.04)*0.5+Math.sin(t*0.08)*0.25)*0.4"},
-  {name:"DIOXIDE", mode:"byte", formula:"t&(t>>8)", secret:true},
+  {name:"DIOXIDE", mode:"byte", formula:"(t * ((t / 2 >> 10 | t % 16 * t >> 8) & 8 * t >> 12 & 18) | -(t >> 4) + 64)", secret:true},
 ];
 
 function renderPresets(){
